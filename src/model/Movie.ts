@@ -1,55 +1,55 @@
-export class Movie{
-    constructor(
+export class Movie {
+  constructor(
     private id: string,
+
     private title: string,
+
     private director: string,
-    private available: boolean
-    ){}
 
-    getId(){
-        return this.id;
-    }
+    private available: boolean,
+  ) {}
 
-    getTitle(){
-        return this.title
-    }
+  getId() {
+    return this.id;
+  }
 
-    getDirector(){
-        return this.director;
-    }
+  getTitle() {
+    return this.title;
+  }
 
-    getAvailable() {
-        return this.available
-    }
+  getDirector() {
+    return this.director;
+  }
 
+  getAvailable() {
+    return this.available;
+  }
 
-    setId(id: string){
-        this.id = id;
-    }
+  setId(id: string) {
+    this.id = id;
+  }
 
-    setTitle(title: string){
-        this.title = title;
-    }
+  setTitle(title: string) {
+    this.title = title;
+  }
 
-    setDirector(director: string){
-        this.director = director;
-    }
+  setDirector(director: string) {
+    this.director = director;
+  }
 
-    setAvailable(available: boolean) {
-        this.available = available;
-    }
+  setAvailable(available: boolean) {
+    this.available = available;
+  }
 
-
-
-    static toMovieModel(movie: any): Movie {
-        return new Movie(movie.id, movie.title, movie.director, movie.available);
-      }
-
-
+  static toMovieModel(movie: any): Movie {
+    return new Movie(movie.id, movie.title, movie.director, movie.available);
+  }
 }
 
-export interface MovieInputDTO{
-    title: string;
-    director: string;
-}
+export interface MovieInputDTO {
+  available: boolean;
 
+  title: string;
+
+  director: string;
+}
