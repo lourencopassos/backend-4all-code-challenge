@@ -34,13 +34,13 @@ export class MovieDatabase extends BaseDatabase {
     return Movie.toMovieModel(result[0]);
   }
 
-  public async getMoviesByAvailability(availability: boolean): Promise<Movie[] | void> {
+  public async getAvailableMovies(): Promise<Movie[] | Movie | void> {
 
     try {
     const movies = await this.getConnection()
     .select("*")
     .from(MovieDatabase.TABLE_NAME)
-    .where({available: availability})
+    .where({available: true})
 
     return movies[0].map((movie: any) => ({
       id: movie.id,
