@@ -59,4 +59,19 @@ export class MovieBusiness {
 
     return movieAvailability
   }
+
+  async filterMovieByName(title: string): Promise<Movie | Movie[]> {
+    if (!title) {
+      throw new InvalidParameterError("Check movie title")
+    }
+    const movieDatabase = new MovieDatabase();
+
+    const movieAvailability = await movieDatabase.getMovieByTitle(title)
+
+    if (movieAvailability.length < 1) {
+      throw new NotFoundError("Movie not found")
+    }
+
+    return movieAvailability
+  }
 }
