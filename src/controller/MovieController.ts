@@ -139,20 +139,12 @@ export class MovieController {
         return res.status(401).send({ error: 'Unauthorized, check token' });
       }
 
-      const movieId = req.params.id;
-
-      if (!movieId) {
-        return res.status(400).send({ error: "Check movie id to rent" })
-      }
+      const movieTitle = req.query.title as string;
 
       const movieBusiness = new MovieBusiness();
-      const movieAvailability = await movieBusiness.checkAvailability(movieId)
+      const filteredMovies = await movieBusiness.filterMovieByName(movieTitle)
 
-      if (!movieAvailability) {
-        return res.status(422).send({ error: "This movie isn't available" })
-      }
-      await movieBusiness.returnMovie(movieId)
-      res.status(200).send({ sucess: "Movie rented sucessefully" });
+      res.status(200).send({ movies: filteredMovies });
     } catch (error) {
       res.status(error.customErrorCode || 400).send({
         message: error.message,

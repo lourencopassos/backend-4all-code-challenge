@@ -26,13 +26,20 @@ export class MovieDatabase extends BaseDatabase {
     }
   }
 
-  public async getMovieByTitle(title: string): Promise<Movie | Movie[]> {
+  public async getMovieByTitle(title: string): Promise<any> {
     const result = await this.getConnection()
       .select("*")
       .from(MovieDatabase.TABLE_NAME)
       .where({ title });
 
-    return Movie.toMovieModel(result[0]);
+    const mappedMovies = result.map((movie: any) => ({
+      id: movie.id,
+      title: movie.title,
+      director: movie.director,
+      available: movie.available
+    }))
+
+    return mappedMovies
   }
 
   public async getMovieById(id: string): Promise<Movie | Movie[]> {
