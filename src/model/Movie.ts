@@ -41,7 +41,7 @@ export class Movie{
 
 
 
-    static toUserModel(movie: any): Movie {
+    static toMovieModel(movie: any): Movie {
         return new Movie(movie.id, movie.title, movie.director, movie.available);
       }
 
