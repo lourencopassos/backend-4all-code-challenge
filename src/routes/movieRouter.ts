@@ -8,5 +8,6 @@ const movieController = new MovieController();
 
 movieRouter.post("/create", movieController.createMovie);
 movieRouter.get("/available", movieController.getAvailableMovies);
+movieRouter.get("/filter", movieController.getAvailableMovies);
 movieRouter.put("/return/:id", movieController.returnMovie);
 movieRouter.put("/rent/:id", movieController.rentMovie);
