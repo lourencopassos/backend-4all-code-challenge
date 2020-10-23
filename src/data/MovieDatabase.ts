@@ -10,9 +10,9 @@ export class MovieDatabase extends BaseDatabase {
     title: string,
     director: string,
     available: boolean,
-  ): Promise<void> {
+  ): Promise<Movie | undefined> {
     try {
-      await this.getConnection()
+      const movie = await this.getConnection()
         .insert({
           id,
           title,
@@ -20,6 +20,7 @@ export class MovieDatabase extends BaseDatabase {
           available,
         })
         .into(MovieDatabase.TABLE_NAME);
+      return Movie.toMovieModel(movie[0])
     } catch (error) {
       throw new Error(error.sqlMessage || error.message);
     }
@@ -34,44 +35,70 @@ export class MovieDatabase extends BaseDatabase {
     return Movie.toMovieModel(result[0]);
   }
 
-  public async getAvailableMovies(): Promise<Movie[] | Movie | void> {
+  public async getMovieById(id: string): Promise<Movie | Movie[]> {
+    const result = await this.getConnection()
+      .select("*")
+      .from(MovieDatabase.TABLE_NAME)
+      .where({ id });
 
-    try {
-    const movies = await this.getConnection()
-    .select("*")
-    .from(MovieDatabase.TABLE_NAME)
-    .where({available: true})
-
-    return movies[0].map((movie: any) => ({
-      id: movie.id,
-      title: movie.title,
-      director: movie.director,
-      available: movie.available
-    }))
-    } catch (error) {
-      throw new Error(error.sqlMessage || error.message);
-    }    
+    return Movie.toMovieModel(result[0]);
   }
 
-  public async rentMovie(movieId: string): Promise<void> {
+  public async getAvailableMovies(): Promise<any> {
 
     try {
-      await this.getConnection()
-      .update({available: false})
-      .where({movieId})
-      
+      const movies = await this.getConnection()
+        .select("*")
+        .from(MovieDatabase.TABLE_NAME)
+        .where({ available: true })
+
+      const mappedMovies = movies.map((movie: any) => ({
+        id: movie.id,
+        title: movie.title,
+        director: movie.director,
+        available: movie.available
+      }))
+
+      return mappedMovies
     } catch (error) {
       throw new Error(error.sqlMessage || error.message);
     }
   }
 
-    public async returnMovie(movieId: string): Promise<void> {
+  public async rentMovie(id: string): Promise<void> {
 
     try {
       await this.getConnection()
-      .update({available: true})
-      .where({movieId})
-      
+        .update({ available: false })
+        .where({ id })
+        .from(MovieDatabase.TABLE_NAME)
+
+    } catch (error) {
+      throw new Error(error.sqlMessage || error.message);
+    }
+  }
+
+  public async returnMovie(id: string): Promise<void> {
+
+    try {
+      await this.getConnection()
+        .where({ id })
+        .update({ available: true })
+        .from(MovieDatabase.TABLE_NAME)
+
+    } catch (error) {
+      throw new Error(error.sqlMessage || error.message);
+    }
+  }
+
+  public async checkAvailability(id: string): Promise<any> {
+
+    try {
+      const available = await this.getConnection()
+        .where({ id })
+        .select("available")
+        .from(MovieDatabase.TABLE_NAME)
+      return available[0].available
     } catch (error) {
       throw new Error(error.sqlMessage || error.message);
     }
